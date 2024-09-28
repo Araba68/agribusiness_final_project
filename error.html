@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+    <title>Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7da; /* Light red background */
+            color: #721c24; /* Dark red text */
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        a {
+            color: #721c24;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Error</h1>
+    <p>There seems to be a problem retrieving your profile.</p>
+    <p>Please ensure you have signed up correctly or contact support for assistance.</p>
+    <a href="{% url 'home' %}">Go back to Home</a>
+</body>
+</html>

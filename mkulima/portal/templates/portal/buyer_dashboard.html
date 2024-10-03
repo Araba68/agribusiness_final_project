@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For transaction history -->
+    <title>Buyer Dashboard</title>
+    <style>
+        /* Header styling */
+        header {
+            background-color: #2c3e50;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            height: 50px; /* Adjust as needed */
+            margin-right: auto; /* Pushes the buttons to the right */
+        }
+        nav {
+            display: flex;
+            gap: 20px; /* Space between buttons */
+        }
+        nav button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        nav button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Main section styling */
+        main {
+            margin-top: 20px; /* Space above the main content */
+        }
+
+        /* Container for each section */
+        .section-container {
+            background-color: white; /* White background for content area */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 20px; /* Padding inside main */
+            margin-bottom: 20px; /* Space between sections */
+        }
+
+       
+        /* Center the Update Profile Section */
+#update-profile-section {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: calc(100vh - 100px); /* Adjust height according to your header/footer */
+}
+
+/* Update profile container styling */
+.update-profile-container {
+    width: 400px; /* Set a fixed width for the container */
+    background-color: #f9f9f9; /* Light gray background */
+    padding: 20px; /* Padding inside */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    text-align: left; /* Align text to the left */
+}
+
+        /* Table styling for farmer list */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        select, button[type="submit"] {
+            padding: 8px 12px;
+            margin-top: 10px;
+        }
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Transaction chart section */
+        #transaction-history {
+            margin-top: 40px;
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{% static 'portal/images/logo.jpg' %}" alt="logo" class="logo" /> <!-- Update the path to your logo -->
+        <nav>
+            <button onclick="resetPage()">Home</button> <!-- Reset state on click -->
+            <button onclick="window.location.href='{% url 'buyer_dashboard' %}'">Dashboard</button>
+            <button onclick="toggleFarmers()">Connect with Farmers</button>
+    
+    
+            <!-- Profile Dropdown Menu -->
+            <div class="dropdown">
+                <button class="dropbtn">{{ user.username }} ▼</button> <!-- Shows the user's username -->
+                <div class="dropdown-content">
+                    <a href="#" onclick="toggleProfileUpdate()">Update Profile</a>
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Displaying the Buyer's Username -->
+        <h1>Welcome, {{ user.username }}!</h1>
+
+        <!-- Hidden Update Profile Form -->
+        <section id="update-profile-section" style="display: none; margin-top: 20px;">
+            <div class="update-profile-container">
+                <h2>Update Profile</h2>
+                <form action="{% url 'update_buyer_profile' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="contact_info">Contact Info:</label>
+                    <input type="text" id="contact_info" name="contact_info" value="{{ profile.contact_info }}" required><br>
+
+                    <label for="preferred_products">Preferred Products:</label>
+                    <input type="text" id="preferred_products" name="preferred_products" value="{{ profile.preferred_products }}" required><br>
+
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" value="{{ profile.location }}" required><br>
+
+                    <label for="id_number">ID Number:</label>
+                    <input type="text" id="id_number" name="id_number" value="{{ profile.id_number }}" required><br>
+
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Connect with Farmers Section -->
+        <section id="connect-with-farmers" style="display:none;">
+            <div class="farmers-list">
+                <h2>Connect with Farmers</h2>
+                <ul>
+                    {% for farmer in farmers %}
+                        <li>
+                            <p>Name: {{ farmer.user.username }}</p>
+                            <p>Farm Size: {{ farmer.farm_size }}</p>
+                            <p>Farm Products: {{ farmer.farm_products }}</p>
+                            <p>Location: {{ farmer.location }}</p>
+                            <p>ID Number: {{ farmer.id_number }}</p>
+                            <a href="{% url 'purchase' farmer.user.id %}">Purchase</a>
+                        </li>
+                    {% empty %}
+                        <li>No farmers available to connect with.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+                    {% for farmer in farmers %}
+                    <tr>
+                        <td>{{ farmer.name }}</td>
+                        <td>{{ farmer.contact_info }}</td>
+                        <td>
+                            <ul>
+                                {% for product in farmer.products %}
+                                <li>{{ product.name }} - {{ product.quantity }} {{ product.unit }} at {{ product.price_per_unit }} per {{ product.unit }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <form action="{% url 'purchase_product' farmer.id %}" method="post">
+                                {% csrf_token %}
+                                <select name="product_id">
+                                    {% for product in farmer.products %}
+                                    <option value="{{ product.id }}">{{ product.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit">Purchase</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Transaction History Section -->
+        <section id="transaction-history">
+            <h2>Transaction History</h2>
+            <canvas id="transactionChart"></canvas>
+            <script>
+                var ctx = document.getElementById('transactionChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ transaction_data.labels|safe }},
+                        datasets: [{
+                            label: 'Transaction Amount',
+                            data: {{ transaction_data.values|safe }},
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mkulima Portal</p>
+    </footer>
+
+    <script>
+         // Function to toggle the profile update form
+    function toggleProfileUpdate() {
+        const profileSection = document.getElementById('update-profile-section');
+        if (profileSection.style.display === 'none') {
+            profileSection.style.display = 'block';  // Show the profile update form
+        } else {
+            profileSection.style.display = 'none';   // Hide the profile update form
+        }
+    }
+
+    // Function to toggle the farmer list section
+    function toggleFarmers() {
+        const farmersSection = document.getElementById('connect-with-farmers');
+        if (farmersSection.style.display === 'none') {
+            farmersSection.style.display = 'block';
+        } else {
+            farmersSection.style.display = 'none';
+        }
+    }
+
+    // Function to reset the page state
+    function resetPage() {
+        // Hide the profile update form
+        document.getElementById('update-profile-section').style.display = 'none';
+        // Hide the farmers section
+        document.getElementById('connect-with-farmers').style.display = 'none';
+        // Additional resets can be added here if needed
+    }
+    </script>
+</body>
+</html>

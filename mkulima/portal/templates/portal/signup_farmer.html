@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join as Farmer | Mkulima App</title>
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+</head>
+<body class="signup-page">
+    <header>
+        <div class="logo-container">
+            <img src="{% static 'portal/images/logo.jpg' %}" alt="logo" class="logo" />
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2>Join as Farmer</h2>
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+            <form id="registration-form" action="{% url 'signup_farmer' %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="fname" name="fname" placeholder="Enter Your first name" required aria-label="First Name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="lname" name="lname" placeholder="Enter Your last name" required aria-label="Last Name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter Your username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter Your Email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter Your Password" required pattern=".{8,}" title="Must be at least 8 characters long">
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirmpassword" name="confirm_password" placeholder="Re-enter Your Password" required>
+                </div>
+            
+                <div class="input-group">
+                    <label for="farm_size">Farm Size:</label>
+                    <input type="text" id="farm_size" name="farm_size" placeholder="Enter Your Farm Size" required aria-label="Farm Size">
+                </div>
+            
+                <div class="input-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" placeholder="Enter Your Location" required aria-label="Location">
+                </div>
+            
+                <div class="input-group">
+                    <label for="id_number">ID Number:</label>
+                    <input type="text" id="id_number" name="id_number" placeholder="Enter Your ID Number" required aria-label="ID Number">
+                </div>
+            
+                <div class="input-group">
+                    <label for="farm_products">Farm Products:</label>
+                    <textarea id="farm_products" name="farm_products" rows="3" placeholder="Enter up to 20 products, separated by commas." required></textarea>
+                </div>
+            
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="{% url 'signin' %}">Sign In</a>.</p>
+
+            <div class="newsletter-section">
+                <label for="newsletter">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    Subscribe to our newsletter
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Mkulima App. All rights reserved.</p>
+    </footer>
+</body>
+</html>

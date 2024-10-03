@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}"> <!-- Include your CSS file if needed -->
+</head>
+<body>
+    <div class="container">
+        <h1>Update Your Profile</h1>
+
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="farm_size">Farm Size:</label>
+                <input type="text" id="farm_size" name="farm_size" value="{{ profile.farm_size }}" required>
+            </div>
+            <div>
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" value="{{ profile.location }}" required>
+            </div>
+            <div>
+                <label for="id_number">ID Number:</label>
+                <input type="text" id="id_number" name="id_number" value="{{ profile.id_number }}" required>
+            </div>
+            <div>
+                <label for="farm_products">Farm Products:</label>
+                <input type="text" id="farm_products" name="farm_products" value="{{ profile.farm_products }}" required>
+            </div>
+            <div>
+                <button type="submit">Update Profile</button>
+            </div>
+        </form>
+
+        <div>
+            <a href="{% url 'farmer_dashboard' %}">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

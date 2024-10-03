@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Mkulima App</title>
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{% static 'portal/images/logo.jpg' %}" alt="logo" class="logo" />
+        </div>
+    </header>
+
+    <section class="form-container">
+        <h2>Sign In</h2>
+        <form method="POST" action="{% url 'signin' %}">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required><br><br>
+
+            <button type="submit" class="btn">Sign In</button>
+        
+            <label for="remember_me">
+                <input type="checkbox" id="remember_me" name="remember_me">
+                Remember Me
+            </label><br><br>
+        </form>
+        
+    {% if form.errors %}
+    <p class="error-message">{{ form.errors }}</p>
+{% endif %}
+
+        <p>Don't have an account? <a href="{% url 'signup_buyer' %}">Join as Buyer</a> or <a href="{% url 'signup_farmer' %}">Join as Farmer</a>.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Mkulima App. All rights reserved.</p>
+    </footer>
+</body>
+</html>

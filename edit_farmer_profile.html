@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'portal/css/style.css' %}">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <h1>Edit Profile</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" id="phone" value="{{ profile.phone }}"><br>
+
+        <label for="additional_address">Additional Address:</label>
+        <input type="text" name="additional_address" id="additional_address" value="{{ profile.additional_address }}"><br>
+
+        <label for="preferred_products">Preferred Products:</label>
+        <input type="text" name="preferred_products" id="preferred_products" value="{{ profile.preferred_products }}"><br>
+
+        <label for="location">Location:</label>
+        <input type="text" name="location" id="location" value="{{ profile.location }}"><br>
+
+        <button type="submit">Update Profile</button>
+    </form>
+    <a href="{% url 'farmer_dashboard' %}">Cancel</a>
+</body>
+</html>
